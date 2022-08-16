@@ -71,6 +71,8 @@ const UserDetail: React.FunctionComponent = () => {
                             <div className="text"> {userDetail.followers} Following</div>
                         </div>
                         <div className="user-info-item">
+                            <div className="icon"><img src={iconRepo} alt="Repositories" /></div>
+                            <div className="text">{userDetail.following} Public Repositories</div>  
                         </div>
                     </div>
                 </Col>
