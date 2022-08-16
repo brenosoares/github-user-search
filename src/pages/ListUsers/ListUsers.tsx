@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Container, Row, Form, InputGroup } from 'react-bootstrap';
 import { searchUsers } from '../../helpers/api';
 import { UserSearch, UserSearchItem } from '../../model/user';
@@ -15,6 +15,9 @@ const ListUsers: React.FunctionComponent = (props) => {
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [invalidSearchInput, setInvalidSearchInput] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  let navigate = useNavigate();
   
 
   useEffect(() => {
@@ -24,6 +27,9 @@ const ListUsers: React.FunctionComponent = (props) => {
           res => {
           setUserList(res.data);
           setTotalItems(res.data.total_count || 0);
+        }).catch(error => {
+          console.log(error);
+          setErrorMessage(error.message);
         });
       }
       getUsers();
@@ -32,13 +38,9 @@ const ListUsers: React.FunctionComponent = (props) => {
   }, [username]);
 
   const handleSearch = async() => {
+
     if(user) {
-      await searchUsers(user, itemsPerPage, page).then(
-        res => {
-        setUserList(res.data);
-        setTotalItems(res.data.total_count || 0);
-      });
-      setInvalidSearchInput(false);
+      navigate(`/search-list/${user}`)
     }
     else {
       setInvalidSearchInput(true);
@@ -49,7 +51,7 @@ const ListUsers: React.FunctionComponent = (props) => {
     if(userList) {
       return (
           userList.items.map((user: UserSearchItem, index) => {
-            return (<Col xs={6} sm={4} md={3} xl={2} key={user.id} className="user-item" onClick={}>
+            return (<Col xs={6} sm={4} md={3} xl={2} key={user.id} className="user-item" onClick={() => navigate(`/user-detail/${user.login}`)}>
               <Row className="justify-content-center">
                 <Col>
                   <div className="user-avatar">

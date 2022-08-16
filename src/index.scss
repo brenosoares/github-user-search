@@ -15,6 +15,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a, a:hover, a:active, a:visited {
+  color: map.get($theme-colors, "light");
+  text-decoration: none;
+  &:hover {
+    color: map.get($theme-colors, "secondary");
+  }
+}
+
 main {
   display: block;
   padding: 20px 16px;

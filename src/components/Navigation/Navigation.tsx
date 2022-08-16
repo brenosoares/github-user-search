@@ -14,6 +14,7 @@ const Navigation: React.FunctionComponent<INavigationProps> = (props) => {
   
   const { perPage, currentPage, totalItems, onPageChanged } = props;
 
+  if(totalItems >= perPage)
   return (
     <Pagination>
         <Pagination.Prev disabled={currentPage <= 1} onClick={() => onPageChanged(currentPage-1)}/>
@@ -32,7 +33,8 @@ const Navigation: React.FunctionComponent<INavigationProps> = (props) => {
         
         <Pagination.Next disabled={currentPage >= totalItems/perPage} onClick={() => onPageChanged(currentPage+1)}/>
     </Pagination>
-  );
+  )
+  return <></>;
 };
 
 export default Navigation;
