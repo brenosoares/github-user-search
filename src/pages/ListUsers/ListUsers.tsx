@@ -49,7 +49,7 @@ const ListUsers: React.FunctionComponent = (props) => {
     if(userList) {
       return (
           userList.items.map((user: UserSearchItem, index) => {
-            return (<Col xs={6} sm={4} md={3} xl={2} key={user.id} className="user-item">
+            return (<Col xs={6} sm={4} md={3} xl={2} key={user.id} className="user-item" onClick={}>
               <Row className="justify-content-center">
                 <Col>
                   <div className="user-avatar">
