@@ -1,56 +1,69 @@
-import React, {useState} from 'react';
-import { useNavigate } from "react-router-dom";
-import { Button, Col, Container, Row, Form, InputGroup } from 'react-bootstrap';
-import HomeImg from '../../assets/home-img.png';
+import React, {useEffect, useState} from 'react';
+import { Header } from '../../components/Header/Header';
+import Navigation from '../../components/Navigation/Navigation';
+import { SearchBar } from '../../components/SearchBar/SearchBar';
+import { UserList } from '../../components/UserList/UserList';
+import { UserSearch } from '../../model/user';
+import { searchUsers } from '../../services/api';
 
-import './Home.scss';
+import Container from '../../stylesComponents/Container';
+import ErrorMessage from '../../stylesComponents/ErrorMessage';
+
+
+
 
 const Home: React.FunctionComponent = () => {
     const [username, setUsername] = useState('');
     const [invalidSearchInput, setInvalidSearchInput] = useState(false);
-    let navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+  
+    const [userListResponse, setUserListResponse] = useState<UserSearch>();
+    const [page, setPage] = useState<number>(1);
+    const [totalItems, setTotalItems] = useState<number>(0);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSearch = () => {
-        username &&
-        navigate(`/search-list/${username}`) || setInvalidSearchInput(true);
+    const itemsPerPage = 20;
+
+    const getUsers = async () => {
+        setLoading(true)
+        await searchUsers(username, itemsPerPage, page).then(
+          response => {
+          setUserListResponse(response.data);
+          setTotalItems(response.data.total_count || 0);
+          if(response.data.total_count === 0) {
+            setErrorMessage('No results found!')
+          }else{
+            setErrorMessage('')
+          }
+        }).catch(error => {
+          setErrorMessage(error.message);
+        }).finally(() => {
+          setLoading(false);
+        });
+        return userListResponse
     }
 
+    const handleSearch = () => {
+        setInvalidSearchInput(false);
+        if (!!username){
+            getUsers()
+        }
+    }
+
+    useEffect(() => handleSearch(),[page]);
+
   return (
-    <Container fluid>
-        <Row>
-            <Col xs={12} className="text-center">
-                <h1>GitHub Users</h1>
-            </Col>
-        </Row>
-        <Row className="justify-content-md-center">
-            <Col xs={12} md={6}>
-                <InputGroup className="mb-3">
-                    <Form.Control
-                        placeholder="Find a user"
-                        aria-label="Find a user"
-                        aria-describedby="search-user-input"
-                        isInvalid={invalidSearchInput}
-                        value={username}
-                        onKeyDown={(e) => {
-                            e.key === 'Enter' && handleSearch();
-                        }}  
-                        onChange={(e) => {
-                            setUsername(e.target.value);
-                        } }
-                    />  
-                    <Button variant="primary" onClick={() => handleSearch()}>
-                        Search
-                    </Button>
-                </InputGroup>
-            </Col>
-        </Row>
-        <Row>
-            <Col className="justify-content-md-center">
-                <div className="home-img">
-                    <img src={HomeImg} alt="GitHub Users" />
-                </div>  
-            </Col>
-        </Row>
+    <Container>
+        <Header />
+        <SearchBar 
+            username={username} 
+            change={(event) => setUsername(event.target.value)}
+            keyDown={(event) => event.key === 'Enter' && handleSearch()}
+            click={() => handleSearch()}
+        />
+        {invalidSearchInput ? <ErrorMessage message="Username invalid!" /> : null}
+        <UserList userList={userListResponse?.items} isLoading={loading} errorMessage={errorMessage} />
+        {loading ? null : <Navigation currentPage={page} perPage={itemsPerPage} onPageChanged={(pageCurr)=> setPage(pageCurr)} totalItems={totalItems} />}
     </Container>
   );
 };

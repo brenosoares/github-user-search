@@ -20,6 +20,6 @@ export const getUser = async (username: string) => {
 }
 
 export const getUserRepos = async (username: string, perPage: number, page: number) => {
-    return  await api.get<Array<UserRepo>>(`/users/${username}/repos?per_page=${perPage}&page=${page}`);
+    return  await api.get<Array<UserRepo>>(`/users/${username}/repos?per_page=${perPage}&page=${page}&sort=updated`);
     
 }

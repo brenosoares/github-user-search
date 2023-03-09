@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Pagination, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getUser, getUserRepos } from '../../helpers/api';
+import { getUser, getUserRepos } from '../../services/api';
 import { User, UserRepo } from '../../model/user';
-import './UserDetail.scss'
 import iconLink from '../../assets/icon-link.svg';
 import iconFollowers from '../../assets/icon-followers.svg';
 import iconRepo from '../../assets/icon-repo.svg';
+import iconStar from '../../assets/icon-star.svg';
+import iconFork from '../../assets/icon-fork.svg';
+import sampleImg from '../../assets/sample.png'
+import { BackButton, UserCardDetail, UserCardDetailHeader, UserCardDetailHeaderContent, UserCardDetailImage, UserCardDetailInfo, UserInfos, UserInfosIcon, UserInfosText, UserRepoItem, UserRepoItemContent, UserRepoItemFooter, UserRepoItemFooterInfos, UserRepoItemHeader, UserRepoList } from './style';
+import Navigation from '../../components/Navigation/Navigation';
 
 const UserDetail: React.FunctionComponent = () => {
     let navigate = useNavigate();
@@ -14,8 +17,7 @@ const UserDetail: React.FunctionComponent = () => {
     const [userDetail, setUserDetail] = useState<User>();
     const [userRepos, setUserRepos] = useState<Array<UserRepo>>();
     const [page, setPage] = useState<number>(1);
-    const itemsPerPage = 20;
-
+    const itemsPerPage = 10;
     
 
     /* eslint-disable no-unused-expressions */
@@ -38,74 +40,60 @@ const UserDetail: React.FunctionComponent = () => {
     
 
   return (
-    <Container fluid>
-        <Row>
-            <Col xs={3}>
-                <Button variant="info" onClick={() => navigate(-1)}>Voltar</Button>
-            </Col>
-            <Col>
-                <h1>GitHub User Detail</h1>
-            </Col>
-        </Row>
-        {userDetail &&
-            <Row className='user-details p-4'>
-                <Col xs="auto">
-                    <div className="avatar">
-                        <img src={userDetail.avatar_url} alt={userDetail.name} />
-                    </div>
-                </Col>
-                <Col>
-                    <h2>{userDetail.name}</h2>
-                    <div className="bio">
-                        {userDetail.bio}
-                    </div>
-                    <div className="user-info">
-                        <div className="user-info-item">
-                            <div className="icon"><img src={iconLink} alt="Link" /></div>
-                            <div className="text"><a href={userDetail.html_url} target="_blank">{userDetail.html_url}</a></div>
-                        </div>
-                        <div className="user-info-item">
-                            <div className="icon"><img src={iconFollowers} alt="Followers and Following" /></div>
-                            <div className="text"> {userDetail.public_repos} Followers</div>
-                            <div className="text"> • </div>
-                            <div className="text"> {userDetail.followers} Following</div>
-                        </div>
-                        <div className="user-info-item">
-                            <div className="icon"><img src={iconRepo} alt="Repositories" /></div>
-                            <div className="text">{userDetail.following} Public Repositories</div>  
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-        }
-        {userRepos && 
-            <Row className='repos p-4'>
-                <Col xs={12}>
-                    <h3>Repositórios</h3>
-                    <div className="repos-list">
-                        {userRepos && userRepos.map((repo: any) => (
-                            <div className="repo-item" key={repo.id}>
-                                <div className="repo-item-name">{repo.name}</div>
-                                <div className="repo-item-description">{repo.description}</div>
-                            </div>
-                        ))}
-                    </div>
-                </Col>
-            {userRepos.length <= 0 && <div className="loading">Nenhum repositório encontrado...</div>}
-                <Col xs={12}>
-                <Row className='justify-content-center mt-4'>
-                    <Col xs="auto">
-                    <Pagination>
-                        <Pagination.Prev disabled={page <= 1} onClick={() => setPage(page-1)}/>
-                        <Pagination.Next disabled={userRepos.length <= 0} onClick={() => setPage(page+1)}/>
-                    </Pagination>
-                    </Col>
-                </Row>
-                </Col>
-            </Row>
-    }
+    <UserCardDetail>
+        <UserCardDetailHeader>
+            <BackButton onClick={ () => navigate(-1)}>
+            ← back
+            </BackButton>
+            <UserCardDetailHeaderContent>
+                <UserCardDetailImage src={userDetail?.avatar_url || sampleImg} alt="Image Profile" />
+                <UserCardDetailInfo>
+                    <h1>{userDetail?.name}</h1>
+                    <UserInfos>
+                        <div className="text"> {userDetail?.bio}</div>
+                    </UserInfos>
+                    <UserInfos>
+                        <UserInfosIcon><img src={iconLink} alt="Link" /></UserInfosIcon>
+                        <a href={userDetail?.html_url} target="_blank" rel='noreferrer'>{userDetail?.html_url}</a>
+                    </UserInfos>
+                    <UserInfos>
+                        <UserInfosIcon><img src={iconRepo} alt="Repositories" /></UserInfosIcon>
+                        <UserInfosText>{userDetail?.public_repos} Repositories</UserInfosText>  
+                    </UserInfos>
+                    <UserInfos>
+                        <UserInfosIcon><img src={iconFollowers} alt="Followers and Following" /></UserInfosIcon>
+                        <UserInfosText> {userDetail?.public_repos} Followers • {userDetail?.followers} Following</UserInfosText>
+                    </UserInfos>
+                </UserCardDetailInfo>
+            </UserCardDetailHeaderContent>
 
-    </Container>
+        </UserCardDetailHeader>
+           
+        <UserRepoList>
+            {userRepos && userRepos.map((repo: any) => (
+                <UserRepoItem key={repo.id}>
+                    <UserRepoItemHeader>
+                        <img src={iconRepo} alt="Repositories" /> <a href={repo?.html_url} target="_blank" rel='noreferrer'>{repo.name}</a>
+                    </UserRepoItemHeader>
+                    <UserRepoItemContent>
+                        {repo.description}
+                    </UserRepoItemContent>
+                    <UserRepoItemFooter>
+                        <UserRepoItemFooterInfos>
+                            <img src={iconStar} alt="Star Project" /> {repo?.stargazers_count}
+                        </UserRepoItemFooterInfos>
+                        <UserRepoItemFooterInfos>
+                            <img src={iconFork} alt="Fork Project" /> {repo?.forks_count}
+                        </UserRepoItemFooterInfos>
+                        <UserRepoItemFooterInfos>
+                            {repo.language ? `- ${repo?.language}` : null}
+                        </UserRepoItemFooterInfos>
+                    </UserRepoItemFooter>
+                </UserRepoItem>
+            ))}
+        </UserRepoList>
+        <Navigation currentPage={page} perPage={itemsPerPage} onPageChanged={(pageCurr)=> setPage(pageCurr)} totalItems={userDetail?.public_repos || 0} />
+    </UserCardDetail>
   );
 };
 

@@ -1,43 +1,15 @@
-@use "sass:map";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "./styles/colors.scss";
-@import "~bootstrap/scss/bootstrap";
+*{
+  box-sizing: border-box;
+  outline: none;
+}
 
 body {
-  background-color: map.get($theme-colors, "dark");;
+  background-color: #21272f;
   margin: 0;
-  color: map.get($theme-colors, "light");
+  color: #ccc;
   font-family: 'Roboto', 'Oxygen',
   'Ubuntu', 'Helvetica Neue',
   sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-a, a:hover, a:active, a:visited {
-  color: map.get($theme-colors, "light");
-  text-decoration: none;
-  &:hover {
-    color: map.get($theme-colors, "secondary");
-  }
-}
-
-main {
-  display: block;
-  padding: 20px 16px;
-  width: 100%;
-}
-
-section {
-  border-radius: 6px;
-  display: block;
-  padding: 16px;
-}
-
-.form-control:focus, .btn:focus, .form-control.is-invalid:focus, .form-control.is-valid:focus {
-  box-shadow: none;
-  border: none;
-  outline: none;
-}
-
