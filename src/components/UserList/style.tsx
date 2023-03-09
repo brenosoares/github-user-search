@@ -20,6 +20,8 @@ export const UserListCard = styled('div', {
     width: '18%',
     '& h3': {
         color: 'rgba(243,158,16,1)',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
         textAlign: 'center',
     }, 
     '&:hover': {
