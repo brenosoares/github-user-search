@@ -1,20 +1,21 @@
 
 # GitHub Users Search
 
-Projeto feito para buscar usuários do Github.
-Listando uma busca feita pelo nome de usuários, com uma página de detalhes sobre o usuário.
+Project made to fetch Github users.
+Listing a search by username, with a details page about the user.
 
-A tecnologia usada foi [ReactJS](https://reactjs.org/), [SASS](https://sass-lang.com/) & [BootStrap React](https://react-bootstrap.github.io/)
+The technology used was [ReactJS](https://reactjs.org/), [SASS](https://sass-lang.com/), [Stitches](https://stitches.dev/)
 
-Para iniciar o projeto após clonar o repositório, bastar rodar os seguintes comandos:
+To start the project after cloning the repository, just run the following commands:
 
     yarn install
     ou
     npm install
-E após isso executar o comando:
+
+And after that run the command:
 
     yarn start
     ou 
     npm start
 
-Localmente a aplicação vai rodar em `http://localhost:3000/`
+Application run on  `http://localhost:3000/`
